@@ -7,7 +7,7 @@ html{
     /* border : solid black;
     border-radius: 5px; */
     background-color:antiquewhite;
-    background-image: url("./pexels-fwstudio-33348-129731.jpg");
+    background-image: url("./assests/pexels-fwstudio-33348-129731.jpg");
 }
 
 .content{
@@ -90,16 +90,6 @@ html{
 }
 
 
-.pagination-button-left {
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
-}
-
-.pagination-button-right {
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-}
-
 .List{
     display: flex;
     flex-direction: column;
@@ -115,7 +105,7 @@ html{
     color: #333;
     background-color: #f8f9fa;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 5px;
     text-align: center;
 }
 
@@ -124,12 +114,13 @@ html{
 .heading {
     font-size: 100px; 
     font-weight: bold;
+    width: 60vw;
     color: #333;
     text-align: center; 
     margin: 20px;
     text-transform: uppercase;
     letter-spacing: 5px;
-    background-image: url('./pexels-felixmittermeier-956999.jpg');
+    background-image: url('./assests/pexels-felixmittermeier-956999.jpg');
     background-size: cover; 
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
