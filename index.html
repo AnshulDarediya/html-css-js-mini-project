@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./index.css">
 </head>
 
-<body>
+<body id="main-body">
     <h1 class="heading">Image Insight's</h1>
     <div class="content">
         <div class="List">
@@ -16,17 +16,17 @@
                 <!-- images and buttos -->
             </ul>
             <div class="navigate">
-                <button class="pagination-button-left"> Left </button>
+                <button id="pagination-button-left" display="none"> Left </button>
                 <p id="page-number">1</p>
-                <button class="pagination-button-right"> right </button>
+                <button id="pagination-button-right"> right </button>
             </div>
 
         </div>
         <div class="display-container">
-            <img id="main-image"
-                src="https://images.unsplash.com/photo-1561948955-570b270e7c36?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-                alt="">
-            <h2 id="main-text">cat.jpeg</h2>
+            <img id="main-image" src="" alt="">
+            <h2 class="main-title">
+                <span id="main-text" contenteditable="true">TEXT</span>
+            </h2>
         </div>
     </div>
     <script src="./index.js" type="module" referrerpolicy="unsafe-url"></script>
