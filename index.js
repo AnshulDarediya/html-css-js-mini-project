@@ -2,6 +2,7 @@ import data from "./data.js";
 
 const len = 4;
 let startIndex = 0;
+let subIndex=0;
 let dataArray = data.slice(startIndex, len);
 const map1 = new Map();
 
@@ -13,12 +14,12 @@ function CreateButton(itemText) {
     btn.innerText = itemText;
   } else {
     const textElement = itemText;
-    let availableLength = totalChars - 3;
+    let availableLength = totalChars - 5;
     let frontText = "";
-    const middleText = "...";
+    const middleText = " ... ";
     let endText = "";
-    let i = 0,
-      j = textElement.length - 1;
+    let i = 0;
+    let j = textElement.length - 1;
 
     while (availableLength - 2 >= 0 && i <= j) {
       frontText += textElement[i];
@@ -27,6 +28,7 @@ function CreateButton(itemText) {
       j--;
       availableLength -= 2;
     }
+    endText=endText.split('').reverse().join('');
 
     btn.innerText = frontText + middleText + endText;
   }
@@ -87,6 +89,7 @@ function handleButtonClick() {
         mainText.innerText = map1.get(startIndex + index);
       }
       item.classList.add("Clicked");
+      subIndex=index;
     });
   });
 }
@@ -112,9 +115,9 @@ function handlePageChange() {
 function getCharacterDimensions() {
   // Create a temporary span element to measure character size
   const tempSpan = document.createElement("span");
-  tempSpan.style.position = "absolute";
-  tempSpan.style.whiteSpace = "nowrap";
-  tempSpan.style.visibility = "hidden";
+  // tempSpan.style.position = "absolute";
+  // tempSpan.style.whiteSpace = "nowrap";
+  // tempSpan.style.visibility = "hidden";
   tempSpan.innerText = "A";
 
   document.body.appendChild(tempSpan);
@@ -153,6 +156,8 @@ function listenButtonClick() {
     handleButtonClick();
     let mainTitle = dataArray[0].title;
     if (map1.has(startIndex)) mainTitle = map1.get(startIndex);
+    subIndex=0;
+    displaySelected();
     displayFirstImage(dataArray[0].previewImage, mainTitle);
   });
 
@@ -164,20 +169,26 @@ function listenButtonClick() {
     handleButtonClick();
     let mainTitle = dataArray[0].title;
     if (map1.has(startIndex)) mainTitle = map1.get(startIndex);
+    subIndex=0;
+    displaySelected();
     displayFirstImage(dataArray[0].previewImage, dataArray[0].title);
   });
 }
 
 function listenScreenResize() {
-  const screen = document.getElementById("main-body");
-  console.log("screen element", screen);
-  screen.addEventListener("resize", () => {
-    console.log("Size Changed");
+  window.addEventListener("resize", () => {
     displayData();
+    handleButtonClick();
+    displaySelected();
   });
 }
 
-function handleEditContent() {
+function displaySelected(){
+  let selected=document.getElementsByClassName("list-item")[subIndex];
+  selected.classList.add("Clicked");
+}
+
+function listenEditContent() {
   const textCotent = document.getElementById("main-text");
   textCotent.addEventListener("input", () => {
     const imgContent = document.getElementById("main-image");
@@ -192,10 +203,11 @@ function main() {
   handleButtonClick();
   handlePageChange();
   displayFirstImage(dataArray[0].previewImage, dataArray[0].title);
-
+  displaySelected();
+  
   listenButtonClick();
   listenScreenResize();
-  handleEditContent();
+  listenEditContent();
 }
 
 main();
