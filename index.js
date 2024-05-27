@@ -2,37 +2,15 @@ import data from "./data.js";
 
 const len = 4;
 let startIndex = 0;
-let subIndex=0;
+let subIndex = 0;
 let dataArray = data.slice(startIndex, len);
 const map1 = new Map();
 
-function CreateButton(itemText) {
-  const btn = document.createElement("button");
-  const totalChars = estimateCharacterCount("dataContiner");
-
-  if (itemText.length < totalChars) {
-    btn.innerText = itemText;
-  } else {
-    const textElement = itemText;
-    let availableLength = totalChars - 5;
-    let frontText = "";
-    const middleText = " ... ";
-    let endText = "";
-    let i = 0;
-    let j = textElement.length - 1;
-
-    while (availableLength - 2 >= 0 && i <= j) {
-      frontText += textElement[i];
-      endText += textElement[j];
-      i++;
-      j--;
-      availableLength -= 2;
-    }
-    endText=endText.split('').reverse().join('');
-
-    btn.innerText = frontText + middleText + endText;
-  }
-  return btn;
+function elipsify() {
+  const btns = document.querySelectorAll("#btn-text");
+  btns.forEach((btn) => {
+    btn.innerText = estimateFinalText(btn.innerText);
+  });
 }
 
 function displayData() {
@@ -46,16 +24,17 @@ function displayData() {
     img.src = item.previewImage;
     img.classList.add("logo-image");
 
-    const btn = CreateButton(item.title);
-    // li.innerHTML = `<img src="${item.previewImage}" alt="${item.title}" class="logo-image"> <button>${item.title}</button>`;
     li.classList.add("list-item");
     li.setAttribute("data-image", item.previewImage);
     li.setAttribute("data-text", item.title);
     li.appendChild(img);
+    const btn = document.createElement("button");
+    btn.innerText = item.title;
+    btn.setAttribute("id", "btn-text");
     li.appendChild(btn);
-
     dataContainer.appendChild(li);
   });
+  elipsify();
 }
 
 function displayFirstImage(source, text) {
@@ -89,7 +68,7 @@ function handleButtonClick() {
         mainText.innerText = map1.get(startIndex + index);
       }
       item.classList.add("Clicked");
-      subIndex=index;
+      subIndex = index;
     });
   });
 }
@@ -112,21 +91,53 @@ function handlePageChange() {
   }
 }
 
-function estimateCharacterCount(containerId) {
-  const container = document.getElementById(containerId);
-  const containerWidth = container.offsetWidth;
+function characterWidth(ch) {
   const tempSpan = document.createElement("span");
-  tempSpan.innerText = "A";
-
+  tempSpan.innerText = ch;
   document.body.appendChild(tempSpan);
   const charWidth = tempSpan.offsetWidth;
   document.body.removeChild(tempSpan);
-
-  const charsPerLine = Math.floor(containerWidth / charWidth);
-
-  return charsPerLine;
+  return charWidth;
 }
 
+function estimateFinalText(buttonText) {
+  const container = document.getElementById("btn-text");
+  let containerWidth = container.offsetWidth-60;
+  let requriedWidth = 0;
+  for (let k = 0; k < buttonText.length; k++) {
+    let ch = buttonText[k];
+    requriedWidth += characterWidth(ch);
+  }
+
+  let finalText;
+  if (requriedWidth < containerWidth) {
+    finalText = buttonText;
+  } else {
+    let startText = "";
+    let endText = "";
+    let middleText = " ... ";
+    let currentLength = 0;
+    currentLength += 2 * characterWidth(" ");
+    currentLength += 3 * characterWidth(".");
+    let i = 0;
+    let j = buttonText.length - 1;
+    while (currentLength < containerWidth && i < j) {
+      let ch1 = buttonText[i];
+      let ch2 = buttonText[j];
+      currentLength += characterWidth(ch1);
+      currentLength += characterWidth(ch2);
+      startText += buttonText[i];
+      endText += buttonText[j];
+      i++;
+      j--;
+    }
+    endText = endText.split("").reverse().join("");
+    finalText = startText + middleText + endText;
+    
+  }
+
+  return finalText;
+}
 
 function listenButtonClick() {
   const leftButton = document.getElementById("pagination-button-left");
@@ -142,7 +153,7 @@ function listenButtonClick() {
 
     let mainTitle = dataArray[0].title;
     if (map1.has(startIndex)) mainTitle = map1.get(startIndex);
-    subIndex=0;
+    subIndex = 0;
     displaySelected();
     displayFirstImage(dataArray[0].previewImage, mainTitle);
   });
@@ -155,7 +166,7 @@ function listenButtonClick() {
     handleButtonClick();
     let mainTitle = dataArray[0].title;
     if (map1.has(startIndex)) mainTitle = map1.get(startIndex);
-    subIndex=0;
+    subIndex = 0;
     displaySelected();
     displayFirstImage(dataArray[0].previewImage, dataArray[0].title);
   });
@@ -169,8 +180,8 @@ function listenScreenResize() {
   });
 }
 
-function displaySelected(){
-  let selected=document.getElementsByClassName("list-item")[subIndex];
+function displaySelected() {
+  let selected = document.getElementsByClassName("list-item")[subIndex];
   selected.classList.add("Clicked");
 }
 
@@ -189,7 +200,7 @@ function main() {
   handlePageChange();
   displayFirstImage(dataArray[0].previewImage, dataArray[0].title);
   displaySelected();
-  
+
   //Global Listner
   listenButtonClick();
   listenScreenResize();
