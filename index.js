@@ -112,37 +112,21 @@ function handlePageChange() {
   }
 }
 
-function getCharacterDimensions() {
-  // Create a temporary span element to measure character size
-  const tempSpan = document.createElement("span");
-  // tempSpan.style.position = "absolute";
-  // tempSpan.style.whiteSpace = "nowrap";
-  // tempSpan.style.visibility = "hidden";
-  tempSpan.innerText = "A";
-
-  document.body.appendChild(tempSpan);
-
-  const charWidth = tempSpan.offsetWidth;
-  const charHeight = tempSpan.offsetHeight;
-
-  document.body.removeChild(tempSpan);
-
-  return { charWidth, charHeight };
-}
-
 function estimateCharacterCount(containerId) {
   const container = document.getElementById(containerId);
   const containerWidth = container.offsetWidth;
-  const containerHeight = container.offsetHeight;
-  const { charWidth, charHeight } = getCharacterDimensions();
+  const tempSpan = document.createElement("span");
+  tempSpan.innerText = "A";
+
+  document.body.appendChild(tempSpan);
+  const charWidth = tempSpan.offsetWidth;
+  document.body.removeChild(tempSpan);
 
   const charsPerLine = Math.floor(containerWidth / charWidth);
-  // const lines = Math.floor(containerHeight / charHeight);
-  const lines = 1;
-  const totalChars = charsPerLine * lines;
 
-  return totalChars;
+  return charsPerLine;
 }
+
 
 function listenButtonClick() {
   const leftButton = document.getElementById("pagination-button-left");
@@ -151,9 +135,11 @@ function listenButtonClick() {
   leftButton.addEventListener("click", () => {
     startIndex -= len;
     dataArray = data.slice(startIndex, Math.min(startIndex + len, data.length));
+
     handlePageChange();
     displayData();
     handleButtonClick();
+
     let mainTitle = dataArray[0].title;
     if (map1.has(startIndex)) mainTitle = map1.get(startIndex);
     subIndex=0;
@@ -192,8 +178,7 @@ function listenEditContent() {
   const textCotent = document.getElementById("main-text");
   textCotent.addEventListener("input", () => {
     const imgContent = document.getElementById("main-image");
-    let idx = Number(imgContent.getAttribute("Index"));
-    map1.set(startIndex + idx, textCotent.innerText);
+    map1.set(startIndex + subIndex, textCotent.innerText);
   });
 }
 
@@ -205,6 +190,7 @@ function main() {
   displayFirstImage(dataArray[0].previewImage, dataArray[0].title);
   displaySelected();
   
+  //Global Listner
   listenButtonClick();
   listenScreenResize();
   listenEditContent();
