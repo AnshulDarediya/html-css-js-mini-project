@@ -13,6 +13,55 @@ function elipsify() {
   });
 }
 
+function estimateFinalText(buttonText) {
+
+  const container = document.getElementById("btn-text");
+  let containerWidth = container.offsetWidth - 60;
+  let requriedWidth = 0;
+
+  for (let k = 0; k < buttonText.length; k++) {
+    let ch = buttonText[k];
+    requriedWidth += characterWidth(ch);
+  }
+
+  let finalText;
+  if (requriedWidth < containerWidth) {
+    finalText = buttonText;
+  } else {
+    let startText = "";
+    let endText = "";
+    let middleText = " ... ";
+    let currentWidth = 0;
+    currentWidth += 2 * characterWidth(" ");
+    currentWidth += 3 * characterWidth(".");
+    let i = 0;
+    let j = buttonText.length - 1;
+    while (currentWidth < containerWidth && i < j) {
+      let ch1 = buttonText[i];
+      let ch2 = buttonText[j];
+      currentWidth += characterWidth(ch1);
+      currentWidth += characterWidth(ch2);
+      startText += buttonText[i];
+      endText += buttonText[j];
+      i++;
+      j--;
+    }
+    endText = endText.split("").reverse().join("");
+    finalText = startText + middleText + endText;
+  }
+
+  return finalText;
+}
+
+function characterWidth(ch) {
+  const tempSpan = document.createElement("span");
+  tempSpan.innerText = ch;
+  document.body.appendChild(tempSpan);
+  const charWidth = tempSpan.offsetWidth;
+  document.body.removeChild(tempSpan);
+  return charWidth;
+}
+
 function displayData() {
   const dataContainer = document.getElementById("dataContiner");
   dataContainer.innerHTML = "";
@@ -91,54 +140,6 @@ function handlePageChange() {
   }
 }
 
-function characterWidth(ch) {
-  const tempSpan = document.createElement("span");
-  tempSpan.innerText = ch;
-  document.body.appendChild(tempSpan);
-  const charWidth = tempSpan.offsetWidth;
-  document.body.removeChild(tempSpan);
-  return charWidth;
-}
-
-function estimateFinalText(buttonText) {
-  const container = document.getElementById("btn-text");
-  let containerWidth = container.offsetWidth-60;
-  let requriedWidth = 0;
-  for (let k = 0; k < buttonText.length; k++) {
-    let ch = buttonText[k];
-    requriedWidth += characterWidth(ch);
-  }
-
-  let finalText;
-  if (requriedWidth < containerWidth) {
-    finalText = buttonText;
-  } else {
-    let startText = "";
-    let endText = "";
-    let middleText = " ... ";
-    let currentLength = 0;
-    currentLength += 2 * characterWidth(" ");
-    currentLength += 3 * characterWidth(".");
-    let i = 0;
-    let j = buttonText.length - 1;
-    while (currentLength < containerWidth && i < j) {
-      let ch1 = buttonText[i];
-      let ch2 = buttonText[j];
-      currentLength += characterWidth(ch1);
-      currentLength += characterWidth(ch2);
-      startText += buttonText[i];
-      endText += buttonText[j];
-      i++;
-      j--;
-    }
-    endText = endText.split("").reverse().join("");
-    finalText = startText + middleText + endText;
-    
-  }
-
-  return finalText;
-}
-
 function listenButtonClick() {
   const leftButton = document.getElementById("pagination-button-left");
   const rightButton = document.getElementById("pagination-button-right");
@@ -193,18 +194,35 @@ function listenEditContent() {
   });
 }
 
-function main() {
-  //function Calls
+function fetchAndRun() {
   displayData();
   handleButtonClick();
   handlePageChange();
-  displayFirstImage(dataArray[0].previewImage, dataArray[0].title);
   displaySelected();
+  displayFirstImage(dataArray[0].previewImage, dataArray[0].title);
 
   //Global Listner
   listenButtonClick();
   listenScreenResize();
   listenEditContent();
 }
+
+function main() {
+  //function Calls
+  
+  let promise = new Promise(function (resolve, reject) {
+    setTimeout(() => {
+      let num=Math.random();
+      // console.log(num);
+      if(num<=0.5) resolve("Done");
+      else reject("404");
+    }, 3000);
+  });
+
+  promise
+  .then(() => fetchAndRun())
+  .catch((err) => alert(`Error due to ${err}`));
+}
+
 
 main();
