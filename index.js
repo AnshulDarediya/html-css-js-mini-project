@@ -17,37 +17,28 @@ function estimateFinalText(buttonText) {
 
   const container = document.getElementById("btn-text");
   let containerWidth = container.offsetWidth - 60;
-  let requriedWidth = 0;
-
-  for (let k = 0; k < buttonText.length; k++) {
-    let ch = buttonText[k];
-    requriedWidth += characterWidth(ch);
-  }
+  let requriedWidth = characterWidth(buttonText);
 
   let finalText;
+  
   if (requriedWidth < containerWidth) {
     finalText = buttonText;
-  } else {
-    let startText = "";
-    let endText = "";
-    let middleText = " ... ";
-    let currentWidth = 0;
-    currentWidth += 2 * characterWidth(" ");
-    currentWidth += 3 * characterWidth(".");
-    let i = 0;
-    let j = buttonText.length - 1;
-    while (currentWidth < containerWidth && i < j) {
-      let ch1 = buttonText[i];
-      let ch2 = buttonText[j];
-      currentWidth += characterWidth(ch1);
-      currentWidth += characterWidth(ch2);
-      startText += buttonText[i];
-      endText += buttonText[j];
-      i++;
-      j--;
+  } 
+  else {
+    let currentWidth = 2 * characterWidth(" ")+ 3 * characterWidth(".");
+    let start = 0;
+    let end = buttonText.length - 1;
+    while (currentWidth < containerWidth && start < end) {
+      currentWidth += characterWidth(buttonText[start]);
+      currentWidth += characterWidth(buttonText[end]);
+      start++;
+      end--;
     }
-    endText = endText.split("").reverse().join("");
-    finalText = startText + middleText + endText;
+    let startText=buttonText.slice(0,start);
+    let middleText = " ... ";
+    let endText=buttonText.slice(-start);
+
+    finalText = startText.concat(middleText,endText);
   }
 
   return finalText;
@@ -214,7 +205,7 @@ function main() {
     setTimeout(() => {
       let num=Math.random();
       // console.log(num);
-      if(num<=0.5) resolve("Done");
+      if(num<=1) resolve("Done");
       else reject("404");
     }, 3000);
   });
